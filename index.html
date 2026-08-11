@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>디지털세상 - 놀면서 돈벌자!</title>
+    <title>디지털세상 - 구글 연동 완료!</title>
+    <!-- 구글 로그인 공식 API 라이브러리 불러오기 -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
             font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
             max-width: 800px;
@@ -20,7 +18,7 @@
             color: #ffffff;
         }
 
-        /* 1. 상단 플랫폼 헤더 */
+        /* 메인 헤더 */
         .platform-header {
             background: rgba(15, 23, 42, 0.85);
             backdrop-filter: blur(10px);
@@ -34,60 +32,47 @@
             align-items: center;
             box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
         }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .main-logo-img { height: 60px; border-radius: 12px; object-fit: contain; }
+        .logo-title-box h1 { margin: 0; font-size: 22px; color: #60a5fa; }
+        .logo-title-box p { margin: 0; font-size: 13px; color: #facc15; font-weight: bold; }
 
-        .logo-area {
+        /* 구글 로그인 영역 디자인 */
+        .user-status-box {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
-
-        .main-logo-img {
-            height: 60px;
-            border-radius: 12px;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
-            object-fit: contain;
-        }
-
-        .logo-title-box h1 {
-            margin: 0;
-            font-size: 22px;
-            color: #60a5fa;
-            text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
-        }
-
-        .logo-title-box p {
-            margin: 0;
-            font-size: 13px;
-            color: #facc15;
-            font-weight: bold;
-        }
-
-        /* 로그인 / 회원가입 버튼 */
-        .auth-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .auth-btn {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            border: 1px solid #60a5fa;
-            padding: 8px 16px;
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
+            border: 1px solid #60a5fa;
+        }
+        .user-profile-pic {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+        .user-name {
+            font-size: 13px;
             font-weight: bold;
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
-            transition: all 0.2s;
+            color: #f8fafc;
+        }
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
         }
 
-        .auth-btn:hover {
-            transform: scale(1.05);
-            background: #facc15;
-            color: #000;
-        }
-
-        /* 2. 네온 검색창 */
+        /* 네온 검색창 */
         .search-box {
             background: rgba(15, 23, 42, 0.8);
             border: 1px solid #3b82f6;
@@ -96,250 +81,83 @@
             margin-bottom: 25px;
             display: flex;
             gap: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
-
         .search-input {
-            flex: 1;
-            padding: 10px 15px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            font-size: 14px;
-            color: white;
-            outline: none;
+            flex: 1; padding: 10px 15px; background: #0f172a;
+            border: 1px solid #334155; border-radius: 8px; font-size: 14px; color: white; outline: none;
         }
-
-        .search-input:focus {
-            border-color: #facc15;
-        }
-
         .search-btn {
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
+            color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;
         }
 
-        /* 3. 프로필 카드 */
+        /* 프로필 & 링크 */
         .profile-card {
-            background: rgba(30, 41, 59, 0.85);
-            border: 1px solid #475569;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
+            background: rgba(30, 41, 59, 0.85); border: 1px solid #475569;
+            border-radius: 16px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 20px;
         }
+        .link-buttons { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .btn { padding: 10px 18px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: bold; color: white !important; }
+        .btn-google { background-color: #4285F4; }
+        .btn-naver { background-color: #03C75A; }
+        .btn-insta { background-color: #E1306C; }
 
-        .profile-img {
-            font-size: 45px;
-        }
-
-        .profile-info h2 {
-            margin: 0 0 4px 0;
-            font-size: 20px;
-            color: #f8fafc;
-        }
-
-        .profile-info p {
-            margin: 0;
-            color: #94a3b8;
-            font-size: 14px;
-        }
-
-        .github-btn {
-            display: inline-block;
-            background: #0f172a;
-            color: #38bdf8;
-            border: 1px solid #38bdf8;
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 12px;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        /* 외부 링크 버튼 */
-        .link-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 18px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            color: white !important;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-        }
-
-        .btn-google {
-            background-color: #4285F4;
-        }
-
-        .btn-naver {
-            background-color: #03C75A;
-        }
-
-        .btn-insta {
-            background-color: #E1306C;
-        }
-
-        /* 4. 유튜브 스트리밍 영역 */
+        /* 유튜브 및 공지 */
         .youtube-section {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid #ef4444;
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 30px;
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+            background: rgba(15, 23, 42, 0.9); border: 1px solid #ef4444;
+            padding: 20px; border-radius: 16px; margin-bottom: 30px;
         }
-
-        .youtube-section h2 {
-            margin-top: 0;
-            color: #f87171;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        /* 최근 공지 글 */
-        .post {
-            background: rgba(30, 41, 59, 0.85);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 5px solid #facc15;
-            margin-bottom: 20px;
-        }
-
-        .post h3 {
-            margin-top: 0;
-            color: #facc15;
-        }
-
-        .post-date {
-            color: #64748b;
-            font-size: 12px;
-            margin-bottom: 8px;
-        }
-
-        /* 모달 팝업 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-
-        .modal-content {
-            background: #0f172a;
-            border: 1px solid #3b82f6;
-            padding: 30px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 360px;
-            text-align: center;
-            color: white;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            background: #1e293b;
-            border: 1px solid #475569;
-            color: white;
-            border-radius: 8px;
-        }
-
-        .close-btn {
-            background: #334155;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .post { background: rgba(30, 41, 59, 0.85); padding: 20px; border-radius: 12px; border-left: 5px solid #facc15; margin-bottom: 20px; }
     </style>
 </head>
-
 <body>
 
-    <!-- 1. 메인 헤더 -->
+    <!-- 헤더 영역 -->
     <div class="platform-header">
         <div class="logo-area">
-            <img src="logo.jpg" alt="디지털세상 로고" class="main-logo-img" onerror="this.style.display='none'">
+            <img src="logo.jpg" alt="로고" class="main-logo-img" onerror="this.style.display='none'">
             <div class="logo-title-box">
                 <h1>디지털세상</h1>
                 <p>놀면서 돈벌자! 💰🎮</p>
             </div>
         </div>
-        <div class="auth-buttons">
-            <button class="auth-btn" onclick="openModal('로그인')">로그인</button>
-            <button class="auth-btn" onclick="openModal('회원가입')">회원가입</button>
+
+        <!-- 우측 상단 구글 로그인 / 연동 영역 -->
+        <div class="user-status-box">
+            <!-- 로그인 완료 시 노출되는 프로필 정보 -->
+            <div id="userInfo" class="user-info">
+                <img id="userPic" class="user-profile-pic" src="" alt="프로필">
+                <span id="userName" class="user-name"></span>
+                <button class="logout-btn" onclick="googleLogout()">로그아웃</button>
+            </div>
+
+            <!-- 로그인 버튼 (구글 공식 버튼 생성 위치) -->
+            <div id="g_id_onload"
+                 data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse">
+            </div>
+            <div id="googleBtn" class="g_id_signin" data-type="standard" data-size="medium" data-theme="filled_blue"></div>
         </div>
     </div>
 
-    <!-- 2. 검색창 -->
+    <!-- 검색창 -->
     <div class="search-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="Google 검색어를 입력하세요..."
-            onkeypress="if(event.keyCode==13) doSearch()">
+        <input type="text" id="searchInput" class="search-input" placeholder="Google 검색어를 입력하세요..." onkeypress="if(event.keyCode==13) doSearch()">
         <button class="search-btn" onclick="doSearch()">검색</button>
     </div>
 
-    <!-- 3. 프로필 -->
+    <!-- 프로필 영역 -->
     <header>
         <div class="profile-card">
-            <div class="profile-img">🤖</div>
+            <div class="profile-img" style="font-size: 45px;">🤖</div>
             <div class="profile-info">
-                <h2>아인즈토야 (AinzToya)</h2>
-                <p>디지털 세상에 오신 것을 환영합니다!</p>
-                <a href="https://github.com/AinzToya" target="_blank" class="github-btn">GitHub 프로필 🚀</a>
+                <h2 id="welcomeText" style="margin:0; color:#f8fafc;">아인즈토야 (AinzToya)</h2>
+                <p style="margin:0; color:#94a3b8; font-size:14px;">상단 구글 버튼을 눌러 계정을 연동해보세요!</p>
             </div>
         </div>
 
-        <!-- 버튼 모음 -->
         <div class="link-buttons">
             <a href="https://www.google.com" target="_blank" class="btn btn-google">Google</a>
             <a href="https://www.naver.com" target="_blank" class="btn btn-naver">Naver</a>
@@ -347,55 +165,70 @@
         </div>
     </header>
 
-    <!-- 4. 유튜브 동영상 -->
+    <!-- 유튜브 영역 -->
     <section class="youtube-section">
-        <h2>🎬 디지털세상 인기 영상</h2>
+        <h2 style="margin-top:0; color:#f87171; font-size:18px;">🎬 디지털세상 인기 영상</h2>
         <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk" title="YouTube video player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
+            <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk" title="YouTube video player" allowfullscreen></iframe>
         </div>
     </section>
 
-    <!-- 공지사항 -->
+    <!-- 공지 -->
     <main>
-        <h2 style="color: #60a5fa;">📢 최근 공지 / 소식</h2>
+        <h2 style="color: #60a5fa;">📢 최근 공지</h2>
         <article class="post">
-            <h3>🎉 '디지털세상: 놀면서 돈벌자' 메인 포털 개장!</h3>
-            <div class="post-date">2026년 8월 11일</div>
-            <p>화려한 디지털 세상 로고와 검색창, 유튜브 동영상 재생 기능까지 탑재된 정식 포털 화면이 완성되었습니다!</p>
+            <h3 style="margin-top:0; color:#facc15;">🎉 구글 진짜 연동 기능 탑재!</h3>
+            <p>이제 구글 계정으로 로그인하면 내 실제 프로필 사진과 이름이 상단에 반영됩니다!</p>
         </article>
     </main>
 
-    <!-- 팝업 -->
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle">회원가입</h3>
-            <input type="text" placeholder="아이디 입력">
-            <input type="password" placeholder="비밀번호 입력">
-            <button class="search-btn" style="width:100%; margin-top:10px;" onclick="alert('안돼 지롱! 개발중 ...')">확인</button>
-            <br>
-            <button class="close-btn" onclick="closeModal()">닫기</button>
-        </div>
-    </div>
-
-    <!-- 자바스크립트 -->
+    <!-- 구글 로그인 응답 처리 스크립트 -->
     <script>
+        // 1. Google 로그인 성공 시 실행되는 함수
+        function handleCredentialResponse(response) {
+            // 구글에서 전달받은 암호화 토큰(JWT) 해독
+            const responsePayload = parseJwt(response.credential);
+
+            console.log("로그인 성공:", responsePayload);
+
+            // 사용자의 진짜 프로필 정보 가져오기
+            const name = responsePayload.name;
+            const picture = responsePayload.picture;
+
+            // UI 업데이트 (로그인 버튼 숨기고 내 프로필 표시)
+            document.getElementById('googleBtn').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'flex';
+            document.getElementById('userName').innerText = name + '님';
+            document.getElementById('userPic').src = picture;
+            
+            // 메인 프로필 인사말 변경
+            document.getElementById('welcomeText').innerText = name + '님 환영합니다! 🎉';
+        }
+
+        // 2. JWT 암호화 토큰 해독 함수
+        function parseJwt(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        // 3. 로그아웃 기능
+        function googleLogout() {
+            document.getElementById('googleBtn').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('welcomeText').innerText = '아인즈토야 (AinzToya)';
+            alert('로그아웃 되었습니다.');
+        }
+
+        // 검색 기능
         function doSearch() {
             const query = document.getElementById('searchInput').value;
-            if (query) {
-                window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
-            }
-        }
-        function openModal(title) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('authModal').style.display = 'flex';
-        }
-        function closeModal() {
-            document.getElementById('authModal').style.display = 'none';
+            if (query) window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
         }
     </script>
 
 </body>
-
 </html>
