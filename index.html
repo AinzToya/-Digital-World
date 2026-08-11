@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디지털세상 - 놀면서 돈벌자!</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px 50px 20px;
+            line-height: 1.6;
+            background: #090d16 url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200') fixed center/cover;
+            color: #ffffff;
+        }
+
+        /* 1. 상단 플랫폼 헤더 */
+        .platform-header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border: 2px solid #2563eb;
+            border-top: none;
+            padding: 20px 25px;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .main-logo-img {
+            height: 60px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            object-fit: contain;
+        }
+
+        .logo-title-box h1 {
+            margin: 0;
+            font-size: 22px;
+            color: #60a5fa;
+            text-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+        }
+
+        .logo-title-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        /* 로그인 / 회원가입 버튼 */
+        .auth-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .auth-btn {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: 1px solid #60a5fa;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s;
+        }
+
+        .auth-btn:hover {
+            transform: scale(1.05);
+            background: #facc15;
+            color: #000;
+        }
+
+        /* 2. 네온 검색창 */
+        .search-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #3b82f6;
+            padding: 12px 15px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            font-size: 14px;
+            color: white;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #facc15;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 3. 프로필 카드 */
+        .profile-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid #475569;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-img {
+            font-size: 45px;
+        }
+
+        .profile-info h2 {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            color: #f8fafc;
+        }
+
+        .profile-info p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .github-btn {
+            display: inline-block;
+            background: #0f172a;
+            color: #38bdf8;
+            border: 1px solid #38bdf8;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* 외부 링크 버튼 */
+        .link-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            color: white !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn-google {
+            background-color: #4285F4;
+        }
+
+        .btn-naver {
+            background-color: #03C75A;
+        }
+
+        .btn-insta {
+            background-color: #E1306C;
+        }
+
+        /* 4. 유튜브 스트리밍 영역 */
+        .youtube-section {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid #ef4444;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+        }
+
+        .youtube-section h2 {
+            margin-top: 0;
+            color: #f87171;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* 최근 공지 글 */
+        .post {
+            background: rgba(30, 41, 59, 0.85);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #facc15;
+            margin-bottom: 20px;
+        }
+
+        .post h3 {
+            margin-top: 0;
+            color: #facc15;
+        }
+
+        .post-date {
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* 모달 팝업 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #0f172a;
+            border: 1px solid #3b82f6;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 360px;
+            text-align: center;
+            color: white;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: #1e293b;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .close-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1. 메인 헤더 -->
+    <div class="platform-header">
+        <div class="logo-area">
+            <img src="logo.jpg" alt="디지털세상 로고" class="main-logo-img" onerror="this.style.display='none'">
+            <div class="logo-title-box">
+                <h1>디지털세상</h1>
+                <p>놀면서 돈벌자! 💰🎮</p>
+            </div>
+        </div>
+        <div class="auth-buttons">
+            <button class="auth-btn" onclick="openModal('로그인')">로그인</button>
+            <button class="auth-btn" onclick="openModal('회원가입')">회원가입</button>
+        </div>
+    </div>
+
+    <!-- 2. 검색창 -->
+    <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Google 검색어를 입력하세요..."
+            onkeypress="if(event.keyCode==13) doSearch()">
+        <button class="search-btn" onclick="doSearch()">검색</button>
+    </div>
+
+    <!-- 3. 프로필 -->
+    <header>
+        <div class="profile-card">
+            <div class="profile-img">🤖</div>
+            <div class="profile-info">
+                <h2>아인즈토야 (AinzToya)</h2>
+                <p>디지털 세상에 오신 것을 환영합니다!</p>
+                <a href="https://github.com/AinzToya" target="_blank" class="github-btn">GitHub 프로필 🚀</a>
+            </div>
+        </div>
+
+        <!-- 버튼 모음 -->
+        <div class="link-buttons">
+            <a href="https://www.google.com" target="_blank" class="btn btn-google">Google</a>
+            <a href="https://www.naver.com" target="_blank" class="btn btn-naver">Naver</a>
+            <a href="https://www.instagram.com" target="_blank" class="btn btn-insta">Instagram</a>
+        </div>
+    </header>
+
+    <!-- 4. 유튜브 동영상 -->
+    <section class="youtube-section">
+        <h2>🎬 디지털세상 인기 영상</h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk" title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <!-- 공지사항 -->
+    <main>
+        <h2 style="color: #60a5fa;">📢 최근 공지 / 소식</h2>
+        <article class="post">
+            <h3>🎉 '디지털세상: 놀면서 돈벌자' 메인 포털 개장!</h3>
+            <div class="post-date">2026년 8월 11일</div>
+            <p>화려한 디지털 세상 로고와 검색창, 유튜브 동영상 재생 기능까지 탑재된 정식 포털 화면이 완성되었습니다!</p>
+        </article>
+    </main>
+
+    <!-- 팝업 -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">회원가입</h3>
+            <input type="text" placeholder="아이디 입력">
+            <input type="password" placeholder="비밀번호 입력">
+            <button class="search-btn" style="width:100%; margin-top:10px;" onclick="alert('테스트용 모달입니다!')">확인</button>
+            <br>
+            <button class="close-btn" onclick="closeModal()">닫기</button>
+        </div>
+    </div>
+
+    <!-- 자바스크립트 -->
+    <script>
+        function doSearch() {
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+            }
+        }
+        function openModal(title) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('authModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('authModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+
+</html>
