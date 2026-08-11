@@ -133,9 +133,9 @@
                 <button class="logout-btn" onclick="googleLogout()">로그아웃</button>
             </div>
 
-            <!-- 로그인 버튼 (구글 공식 버튼 생성 위치) -->
+            <!-- 발급받으신 클라이언트 ID가 적용된 구글 로그인 영역 -->
             <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                 data-client_id="498693855157-ei1skhu9i7n6gfbd6o0iurniucbfojnf.apps.googleusercontent.com"
                  data-callback="handleCredentialResponse">
             </div>
             <div id="googleBtn" class="g_id_signin" data-type="standard" data-size="medium" data-theme="filled_blue"></div>
@@ -143,11 +143,10 @@
     </div>
 
     <!-- 검색창 -->
-    <!-- 변경 후 -->
-<div id="g_id_onload"
-     data-client_id="498693855157-ei1skhu9i7n6gfbd6o0iurniucbfojnf.apps.googleusercontent.com"
-     data-callback="handleCredentialResponse">
-</div>
+    <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Google 검색어를 입력하세요..." onkeypress="if(event.keyCode==13) doSearch()">
+        <button class="search-btn" onclick="doSearch()">검색</button>
+    </div>
 
     <!-- 프로필 영역 -->
     <header>
@@ -187,22 +186,18 @@
     <script>
         // 1. Google 로그인 성공 시 실행되는 함수
         function handleCredentialResponse(response) {
-            // 구글에서 전달받은 암호화 토큰(JWT) 해독
             const responsePayload = parseJwt(response.credential);
 
             console.log("로그인 성공:", responsePayload);
 
-            // 사용자의 진짜 프로필 정보 가져오기
             const name = responsePayload.name;
             const picture = responsePayload.picture;
 
-            // UI 업데이트 (로그인 버튼 숨기고 내 프로필 표시)
             document.getElementById('googleBtn').style.display = 'none';
             document.getElementById('userInfo').style.display = 'flex';
             document.getElementById('userName').innerText = name + '님';
             document.getElementById('userPic').src = picture;
             
-            // 메인 프로필 인사말 변경
             document.getElementById('welcomeText').innerText = name + '님 환영합니다! 🎉';
         }
 
